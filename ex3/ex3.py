@@ -18,30 +18,24 @@ for i in range(2):
     print(message, server_address)
 serverSocket.close()
 
-'''
-port_to_listen=port
-serverSocket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
-serverSocket.bind(('',port_to_listen))
-
-for i in range(10):
-    message, server_address =serverSocket.recvfrom(1024)
-    print(message, server_address)
-
-serverSocket.close()
-'''
 message_to_send="Here we are"
 
 
 def listen(port_to_listen):
     serverSocket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
     serverSocket.bind(('',port_to_listen))
+    serverSocket.settimeout(1.)
+    try:
+        for i in range(3):
+            message, server_address =serverSocket.recvfrom(len(message_to_send)+1+len('You said:'))
+            print(message, server_address)
 
-    for i in range(1):
-        message, server_address =serverSocket.recvfrom(len(message_to_send)+1+len('You said:'))
-        print(message, server_address)
-
-    serverSocket.close()
-    return 0
+        serverSocket.close()
+        return 0
+    except:
+        print('Time out!')        
+        pass
+        
 
 def client(port_to_send):
     clientSocket = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
